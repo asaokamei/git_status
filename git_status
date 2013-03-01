@@ -2,9 +2,9 @@
 <?php
 
 $dir = getcwd();
-echo gitsub::go( $dir );
+echo GitSub::go( $dir );
 
-class gitsub
+class GitSub
 {
     public static function go( $dir=null )
     {
@@ -18,7 +18,9 @@ class gitsub
         $status .= "---------------\n";
         $status .= "PATH: $dir\n";
         $status .= "---------------\n";
+
         foreach( $list as $path ) {
+
             $command = "cd $path; git status";
             $output  = `$command`;
             $path = substr( $path, strlen( $dir ) );
@@ -36,6 +38,7 @@ class gitsub
         );
         $list = array();
         foreach( $iterator as $file ) {
+
             if($file->isDir() && $path = $file->getRealpath() ) {
                 if( substr( $path, -4 ) === '.git' ) $list[] = substr( $path, 0, -4 );
             }
