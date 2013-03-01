@@ -1,0 +1,45 @@
+#!/usr/bin/php
+<?php
+
+echo gitsub::go();
+
+class gitsub
+{
+    public static function go( $dir=null )
+    {
+        if( !$dir ) $dir = __DIR__;
+        $list = gitsub::find( $dir );
+        return gitsub::status( $list, $dir );
+    }
+    public static function status( $list, $dir )
+    {
+        $status = '';
+        $status .= "---------------\n";
+        $status .= "PATH: $dir\n";
+        $status .= "---------------\n";
+        foreach( $list as $path ) {
+            $command = "cd $path; git status";
+            $output  = `$command`;
+            $path = substr( $path, strlen( $dir ) );
+            $status .= $path . "\n";
+            $status .= $output;
+            $status .= "---------------\n";
+        }
+        return $status;
+    }
+    public static function find( $dir=null )
+    {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator( $dir ),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+        $list = array();
+        foreach( $iterator as $file ) {
+            if($file->isDir() && $path = $file->getRealpath() ) {
+                if( substr( $path, -4 ) === '.git' ) $list[] = substr( $path, 0, -4 );
+            }
+        }
+        $list = array_unique( $list );
+        return $list;
+    }
+}
