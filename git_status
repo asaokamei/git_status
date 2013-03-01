@@ -1,7 +1,8 @@
 #!/usr/bin/php
 <?php
 
-echo gitsub::go();
+$dir = getcwd();
+echo gitsub::go( $dir );
 
 class gitsub
 {
